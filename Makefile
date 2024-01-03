@@ -142,7 +142,13 @@ copy-kmk:
 	@rsync -rhu kmk $(MOUNTPOINT)/
 	@sync
 
+copy-pitec:
+	@echo "===> Copying PiTec source folder"
+	@rsync -rhu pitec $(MOUNTPOINT)/
+	@sync
+
 else # MOUNTPOINT
 copy-board copy-bootpy copy-compiled copy-keymap copy-kmk:
 	@echo "**** MOUNTPOINT must be defined (wherever your CIRCUITPY drive is mounted) ****" && exit 1
 endif # ifndef MOUNTPOINT
+

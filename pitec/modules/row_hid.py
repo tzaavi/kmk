@@ -5,7 +5,7 @@ from kmk.kmk_keyboard import KMKKeyboard
 from kmk.keys import KC
 from kmk.modules import Module
 
-debug = Debug("code")
+debug = Debug("PiTecRawHid")
 
 # fmt: off
 REPORT_COUNT = 63  # size of report in bytes
@@ -40,7 +40,7 @@ CUSTOM_REPORT_DESCRIPTOR = bytes((
 usage_page = 0xFF00
 usage = 0x01
 
-pitec_com_hid = usb_hid.Device(
+raw_hid_device = usb_hid.Device(
     report_descriptor=CUSTOM_REPORT_DESCRIPTOR,
     usage_page=usage_page,  # Vendor defined
     usage=usage,  # Vendor page 1
@@ -50,15 +50,16 @@ pitec_com_hid = usb_hid.Device(
 )
 
 
-class PiTecCom(Module):
+class PiTecRawHid(Module):
     def __init__(self):
         self.hid = None
 
     def __repr__(self):
-        return "(PiTecCom)"
+        return "(PiTecRawHid)"
 
     def during_bootup(self, keyboard: KMKKeyboard):
         for dev in usb_hid.devices:
+            debug("dev: ", dev.usage_page)
             if (
                 dev.usage_page == usage_page
                 and dev.usage == usage
