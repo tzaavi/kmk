@@ -2,6 +2,7 @@ import { useState } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
+import { usb } from "./usb";
 
 function fromBytesInt64(bytes: Uint8Array): bigint {
   const { buffer } = new Uint8Array(bytes);
@@ -33,19 +34,24 @@ function App() {
   const [device, setDevie] = useState<HIDDevice>();
 
   const connect = async () => {
-    const device = await navigator.hid.requestDevice({ filters: [] });
-    device[0].open();
-    setDevie(device[0]);
-    console.log("device: ", device[0]);
+    // const device = await navigator.hid.requestDevice({ filters: [] });
+    // device[0].open();
+    // setDevie(device[0]);
+    // console.log("device: ", device[0]);
+    usb.connect();
   };
 
   const send = async () => {
-    const enc = new TextEncoder();
-    const data = enc.encode(
-      "123456789012345678901234567890123456789012345678901234567890123",
-    );
-    console.log("data: ", data);
-    device?.sendReport(0x08, data);
+    // const enc = new TextEncoder();
+    // const data = enc.encode(
+    //   "123456789012345678901234567890123456789012345678901234567890123",
+    // );
+    // console.log("data: ", data);
+    // device?.sendReport(0x08, data);
+    usb.send({
+      foo: 123,
+      name: "sdfsdfsdfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    });
   };
 
   const convert = () => {

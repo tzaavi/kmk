@@ -1,23 +1,24 @@
 export class Usb {
-  private device: HIDDevice;
+  private device?: HIDDevice;
 
   async connect() {
     const devices = await navigator.hid.requestDevice({ filters: [] });
     if (devices.length > 0) {
       const device = devices[0];
+      console.log("device: ", device);
       device.open();
       this.device = device;
     }
   }
 
-  send(msg: Object) {
+  send(msg: unknown) {
     const json = JSON.stringify(msg);
     const encoder = new TextEncoder();
     const bytes = encoder.encode(json);
 
     const chunks: Uint8Array[] = [];
-    for (let i = 0; i < bytes.length; i += 52) {
-      const chunk = bytes.slice(i, i + 52);
+    for (let i = 0; i < bytes.length; i += 51) {
+      const chunk = bytes.slice(i, i + 51);
       chunks.push(chunk);
     }
 
@@ -25,15 +26,18 @@ export class Usb {
     for (let i = 0; i < chunks.length; i++) {
       const contentSize = toBytesInt16(chunks[0].length);
       const chunksLeft = toBytesInt16(chunks.length - i);
-      const data = new Uint8Array(64);
+      const data = new Uint8Array(63);
       data.set(msgId, 0);
       data.set(contentSize, 8);
       data.set(chunksLeft, 10);
       data.set(chunks[i], 12);
+      console.log("data: ", data.length, data);
       this.device?.sendReport(0x08, data);
     }
   }
 }
+
+export const usb = new Usb();
 
 function fromBytesInt64(bytes: Uint8Array): bigint {
   const { buffer } = new Uint8Array(bytes);
