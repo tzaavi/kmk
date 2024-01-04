@@ -59,7 +59,6 @@ class PiTecRawHid(Module):
 
     def during_bootup(self, keyboard: KMKKeyboard):
         for dev in usb_hid.devices:
-            debug("dev: ", dev.usage_page)
             if (
                 dev.usage_page == usage_page
                 and dev.usage == usage
